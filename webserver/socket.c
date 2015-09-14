@@ -41,7 +41,8 @@ int creer_serveur(int port){
 		perror("accept");
 		return -1;
 	}
-
+	
+	sleep(2);
 	const char * msg = "Bonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\n";
 	write(socket_client, msg, strlen(msg));
 
