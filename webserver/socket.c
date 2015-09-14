@@ -42,17 +42,18 @@ int creer_serveur(int port){
 		return -1;
 	}
 	
-	sleep(2);
+	sleep(1);
+
 	const char * msg = "Bonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\n";
 	write(socket_client, msg, strlen(msg));
 
 	while(1){
-		if(read(socket_client, data, sizeof(data)) == -1){
+		if (read(socket_client, data, sizeof(data)) == -1){
 			perror("listen socket_serveur");
 			return -1;
 		}
 		write(socket_client, data, strlen(data));
-	}	
+	}
 
 	return socket_client;
 
