@@ -19,7 +19,6 @@ int main(void)
 
 		if (socket_client == -1){
 			perror("accept");
-
 		}
 		
 		sleep(1);
@@ -29,8 +28,11 @@ int main(void)
 	
 
 		while(1){
-			read(socket_client, data, 42);
-			write(socket_client, data, 42);
+			int i = read(socket_client, data, 42);
+			if(i != -1)
+				write(socket_client, data, i);
+			else
+				write(socket_client, data, 42);
 		}
 
 	}
