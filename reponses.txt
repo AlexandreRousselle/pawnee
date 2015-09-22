@@ -1,1 +1,8 @@
-1) 
+1) 	Si nous n'avons pas de client ouvert, on peut rallumer le serveur sans problèmes.
+	Si un client est ouvert, on eteint le serveur, le client s'eteint forcement mais quand on rallume le serveur un message s'affiche "bind socker_serveur: Address already in use".
+
+2)  Le client s'eteint instantanement, mais le seveur a attendu 1 seconde avant de s'eteindre.
+
+3)  Le client s'eteint car non-fait pour ipV6.
+
+4)  Le deuxieme client qu'on allume reste en attente car le serveur accepte que une connexion pour l'instant.
