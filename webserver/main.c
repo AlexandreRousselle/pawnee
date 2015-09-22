@@ -9,9 +9,9 @@
 int main(void)
 {
 	fflush(stdout);
+	initialiser_signaux();
 	int socket_serveur = creer_serveur(8080);
 	int socket_client;
-
 	char * data = malloc(42);
 
 	while(1){
