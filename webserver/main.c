@@ -17,9 +17,8 @@ int main(void)
 	while(1){
 		socket_client = accept(socket_serveur, NULL, NULL);
 
-		if (socket_client == -1){
+		if (socket_client == -1)
 			perror("accept");
-		}
 		
 		sleep(1);
 
