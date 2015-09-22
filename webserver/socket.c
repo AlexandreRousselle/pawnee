@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <signal.h>
+#include <sys/wait.h>
 
 int creer_serveur(int port){
 	int socket_serveur;
@@ -36,8 +37,9 @@ int creer_serveur(int port){
 
 void initialiser_signaux(void){
 	if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
-		perror ( " signal " );
+		perror("signal");
 }
+
 
 /* Socket () 
 Puis on fait le bind()

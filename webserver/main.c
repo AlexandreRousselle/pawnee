@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 
+
 int main(void)
 {
 	fflush(stdout);
@@ -13,27 +14,30 @@ int main(void)
 	int socket_serveur = creer_serveur(8080);
 	int socket_client;
 	char * data = malloc(42);
+	const char * msg = "Bonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\n";
 
-	while(1){
+	while (1){
 		socket_client = accept(socket_serveur, NULL, NULL);
 
-		if (socket_client == -1)
-			perror("accept");
+		int pid = fork();
+
+ 		if (pid != 0){
+
+			if (socket_client == -1)
+				perror("accept");	
 		
-		sleep(1);
+			sleep(1);
 
-		const char * msg = "Bonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\n";
-		write(socket_client, msg, strlen(msg));
+			write(socket_client, msg, strlen(msg));
 	
-
-		while(1){
-			int i = read(socket_client, data, 42);
-			if(i != -1)
-				write(socket_client, data, i);
-			else
-				write(socket_client, data, 42);
+			while (1){
+				int i = read(socket_client, data, 42);
+				if (i != -1)
+					write(socket_client, data, i);
+				else
+					write(socket_client, data, 42);
+			}
 		}
-
 	}
 	return 0;
 }
