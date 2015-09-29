@@ -35,16 +35,32 @@ int creer_serveur(int port){
 
 }
 
+void traitement_signal(int sig){
+	if (sig == SIGCHLD){
+		waitpid(-1,0,WNOHANG);
+	}
+}
+
 void initialiser_signaux(void){
+	
 	if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
 		perror("signal");
+
+	struct sigaction sa;
+
+	sa.sa_handler = traitement_signal;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+
+	if (sigaction(SIGCHLD, &sa, NULL) == -1)
+		perror("sigaction(SIGCHLD)");
 }
 
 
 /* Socket () 
 Puis on fait le bind()
 listen () 
-Rien de bloquant dans ces trois la. 
+Rien de bloquant dans ces trois la.
 Sauf si port déjà occupé. 
 
 accept() = > Bloquant, on ne sort pas le temps que personne a demandé une connexion. 

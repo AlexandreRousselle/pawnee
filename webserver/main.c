@@ -9,7 +9,6 @@
 
 int main(void)
 {
-	fflush(stdout);
 	initialiser_signaux();
 	int socket_serveur = creer_serveur(8080);
 	int socket_client;
@@ -21,7 +20,7 @@ int main(void)
 
 		int pid = fork();
 
- 		if (pid != 0){
+ 		if (pid == 0){
 
 			if (socket_client == -1)
 				perror("accept");	
