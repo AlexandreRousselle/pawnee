@@ -36,15 +36,11 @@ int creer_serveur(int port){
 }
 
 void traitement_signal(int sig){
-	if (sig == SIGCHLD){
-		waitpid(-1,0,WNOHANG);
-	}
+	printf("Signal : %d", sig);
+	waitpid(-1,&sig,WNOHANG);
 }
 
 void initialiser_signaux(void){
-	
-	if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
-		perror("signal");
 
 	struct sigaction sa;
 
@@ -54,6 +50,9 @@ void initialiser_signaux(void){
 
 	if (sigaction(SIGCHLD, &sa, NULL) == -1)
 		perror("sigaction(SIGCHLD)");
+
+	if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
+		perror("signal");
 }
 
 

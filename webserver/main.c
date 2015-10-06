@@ -31,11 +31,13 @@ int main(void)
 	
 			while (1){
 				int i = read(socket_client, data, 42);
-				if (i != -1)
+				if (i > 0){
 					write(socket_client, data, i);
-				else
-					write(socket_client, data, 42);
+				} else {
+				  exit(0);/*break;*/
+				}
 			}
+			/*exit(0);*/
 		}
 	}
 	return 0;
