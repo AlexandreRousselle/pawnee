@@ -2,9 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
-#include "socket.h"
 #include <unistd.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <signal.h>
 
+#include "socket.h"
 
 
 int main(void)
@@ -18,26 +23,28 @@ int main(void)
 	while (1){
 		socket_client = accept(socket_serveur, NULL, NULL);
 
+		if (socket_client == -1){
+			perror("accept");	/* Gestion d'erreur sur accept */
+		}
+		sleep(1);
+
 		int pid = fork();
 
- 		if (pid == 0){
+		if (pid != 0){
+			close(socket_client);
 
-			if (socket_client == -1)
-				perror("accept");	
-		
-			sleep(1);
-
+		}else{
+			FILE *fichier = fdopen(socket_client,"w+");	
 			write(socket_client, msg, strlen(msg));
-	
+
 			while (1){
-				int i = read(socket_client, data, 42);
-				if (i > 0){
-					write(socket_client, data, i);
-				} else {
-				  exit(0);/*break;*/
+				if(fgets(data, 42, fichier) == NULL){
+					break;
 				}
+				fprintf(fichier,"<pawnee>");
+				fprintf(fichier,data);
 			}
-			/*exit(0);*/
+			exit(0);
 		}
 	}
 	return 0;

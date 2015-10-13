@@ -8,6 +8,9 @@
 #include <signal.h>
 #include <sys/wait.h>
 
+
+
+
 int creer_serveur(int port){
 	int socket_serveur;
 	
@@ -37,7 +40,9 @@ int creer_serveur(int port){
 
 void traitement_signal(int sig){
 	printf("Signal : %d", sig);
-	waitpid(-1,&sig,WNOHANG);
+	if(sig == SIGCHLD){
+	waitpid(-1,0,WNOHANG);
+}
 }
 
 void initialiser_signaux(void){
