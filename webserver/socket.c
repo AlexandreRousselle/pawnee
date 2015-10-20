@@ -41,8 +41,8 @@ int creer_serveur(int port){
 void traitement_signal(int sig){
 	printf("Signal : %d", sig);
 	if(sig == SIGCHLD){
-	waitpid(-1,0,WNOHANG);
-}
+		waitpid(-1,0,WNOHANG);
+	}
 }
 
 void initialiser_signaux(void){
@@ -58,6 +58,37 @@ void initialiser_signaux(void){
 
 	if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
 		perror("signal");
+}
+
+int requetevalide(char data[]){
+	int i=0;
+	int nbmot=1;
+	int j=0;
+	while(data[i]!='\0' && i!=8000){
+		if(data[i]==' '){
+			if(data[i-1]!=' '){
+				nbmot++;
+				j=i+1;
+			}
+		}
+		i++;
+	}
+	if(nbmot!=3){
+		return 0;
+	}
+	if(!(data[0]=='G' && data[1]=='E' && data[2]=='T')){
+		return 0;
+	}
+	if(!(data[j]=='H' && data[j+1]=='T' && data[j+2]=='T' && data[j+3]=='P' && data[j+4]=='/')){
+		return 0;
+	}if(!(data[j+5]>='0' && data[j+5]<='1')){
+		return 0;
+	}if(!(data[j+6]=='.')){
+		return 0;
+	}if(!(data[j+7]>='0' && data[j+7]<='9')){
+		return 0;
+	}
+	return 1;
 }
 
 
