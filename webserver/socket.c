@@ -62,52 +62,39 @@ void initialiser_signaux(void){
 
 int requetevalide(char data[]){
 	int i=0;
-	int nbmot=1;
-	int j=0;
-	while(data[i]!='\0' && i!=8000){
+	int nbrmot=1;
+	int troisieme_mot=0;
+	int deuxieme_mot=0;
+	while(data[i]!='\0' && i!=2048){
 		if(data[i]==' '){
 			if(data[i-1]!=' '){
-				nbmot++;
-				j=i+1;
+				nbrmot++;
+				if(deuxieme_mot==0){
+					deuxieme_mot=i+1;
+				}
+				troisieme_mot=i+1;
 			}
 		}
 		i++;
 	}
-	if(nbmot!=3){
-		return 0;
+	if(nbrmot!=3){
+		return 400;
 	}
 	if(!(data[0]=='G' && data[1]=='E' && data[2]=='T')){
-		return 0;
+		return 400;
 	}
-	if(!(data[j]=='H' && data[j+1]=='T' && data[j+2]=='T' && data[j+3]=='P' && data[j+4]=='/')){
-		return 0;
-	}if(!(data[j+5]>='0' && data[j+5]<='1')){
-		return 0;
-	}if(!(data[j+6]=='.')){
-		return 0;
-	}if(!(data[j+7]>='0' && data[j+7]<='9')){
-		return 0;
+	if(!(data[troisieme_mot]=='H' && data[troisieme_mot+1]=='T' && data[troisieme_mot+2]=='T' && data[troisieme_mot+3]=='P' && data[troisieme_mot+4]=='/')){
+		return 400;
+	}if(!(data[troisieme_mot+5]>='0' && data[troisieme_mot+5]<='1')){
+		return 400;
+	}if(!(data[troisieme_mot+6]=='.')){
+		return 400;
+	}if(!(data[troisieme_mot+7]>='0' && data[troisieme_mot+7]<='9')){
+		return 400;
+	}if(!(data[deuxieme_mot]=='/' && data[deuxieme_mot+1]==' ')){
+		return 404;
 	}
-	return 1;
+	return 200;
 }
 
 
-/* Socket () 
-Puis on fait le bind()
-listen () 
-Rien de bloquant dans ces trois la.
-Sauf si port déjà occupé. 
-
-accept() = > Bloquant, on ne sort pas le temps que personne a demandé une connexion. 
-Algorythme général d'un serveur 
-Socket()
-bind()
-listen()
-
-while(accept()){
-	fork();
-}
-
-Algo géné d'un client : 
-Socket()
-Accept() */
