@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <signal.h>
+#include <sys/wait.h>
 
 #include "socket.h"
 
@@ -17,7 +18,8 @@ int main(void){
 	int socket_serveur =creer_serveur(8080);
 	int socket_client ;
 	int resultat=0;
-	const char * msg = "Bonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\nBonjour,\nBienvenue sur mon serveur\n";
+	http_request my_http_request;
+	const char * msg = "Welcome to my awesome web socket server\n";
 	while(1){
 		socket_client = accept ( socket_serveur , NULL , NULL );
 		if (socket_client == -1)
@@ -33,27 +35,21 @@ int main(void){
 		}else{
 			FILE *fichier_client= fdopen(socket_client,"w+");			/*FILE *fichier_serveur= fdopen(socket_serveur,"w+");			*/
 			char data[2048];
-			if(fgets(data,2048,fichier_client)==NULL){
-				break;
-			}
+			fgets_or_exit(data, 2048, fichier_client);
 			printf(data);
-			resultat=requetevalide(data);
-			int taille = strlen(data);
-			while(!(data[0]=='\n' || (data[0]=='\r' && data[1]=='\n'))){
-				if(fgets(data,2048,fichier_client)==NULL){
-					break;
-				}
-				printf(data);
-				taille=taille+strlen(data);
+			resultat=parse_http_request(data, &my_http_request);
+			skip_headers(fichier_client);
+			if(!resultat){
+				send_response(fichier_client,400,"Bad Request","Bad request\r\n");
 			}
-			if(resultat==200){
-				write(socket_client, msg, strlen(msg));
-				fprintf(fichier_client, "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Length: %d\n\n200 OK\r\n",taille );
-				
-			}else if(resultat==404){
-				fprintf(fichier_client, "HTTP/1.1 404 Not found\r\nConnection: close\r\nContent-Length:%d\n\n404 Not found\r\n",taille  );
-			}else{
-				fprintf(fichier_client, "HTTP/1.1 400 BAD REQUEST\r\nConnection: close\r\nContent-Length:%d\n\n400 Bad request\r\n",taille  );
+			else if(my_http_request.method==HTTP_UNSUPPORTED){
+				send_response(fichier_client , 405 , "Method Not Allowed" , "Method Not Allowed\r\n" );
+			}
+			else if(strcmp(my_http_request.url,"/")==0){
+				send_response ( fichier_client , 200 , "OK" , msg );
+			}
+			else{
+				send_response ( fichier_client , 404 , "Not Found" , "Not Found\r\n" );
 			}
 			exit(0);
 		}
