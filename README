@@ -1,1 +1,12 @@
-README VIDE
+WEBSERVER C 
+Alexandre Rousselle
+Mickael Descamps
+
+Nous sommes à la fin du 7e Chapitre avec le tag static_site
+Nous n'arrivons pas à afficher l'index.html dans le navigateur. 
+On a bien les bons logs dans le terminal une fois le serveur lancé. 
+On détecte aussi correctement les différentes erreurs et si ce sont des fichiers ou des dossiers. 
+
+Bon courage pour la correction, et merci pour ces semestres d'enseignements. 
+
+
