@@ -1,33 +1,31 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <signal.h>
-#include <sys/wait.h>
-
 #include "socket.h"
 
 
-int main(void){
+int main(int argc, char *argv[]){
+	int fd = 0;
+	if(argc != 2){
+		perror("Dossier non dispo");
+		return 0;
+	}
+
+	const char * root=argv[1];
+	if(!check_path(root)){
+		return 0;
+	}
 	initialiser_signaux();
 	int socket_serveur =creer_serveur(8080);
 	int socket_client ;
 	int resultat=0;
 	http_request my_http_request;
-	const char * msg = "Welcome to my awesome web socket server\n";
 	while(1){
 		socket_client = accept ( socket_serveur , NULL , NULL );
 		if (socket_client == -1)
 			{
 				perror ( "accept" );
-				/* traitement d ’ erreur */
+				
 			}else{
 				printf("Bienvenue \n");
+
 			}		
 		int pid=fork();
 		if(pid!=0){
@@ -45,8 +43,8 @@ int main(void){
 			else if(my_http_request.method==HTTP_UNSUPPORTED){
 				send_response(fichier_client , 405 , "Method Not Allowed" , "Method Not Allowed\r\n" );
 			}
-			else if(strcmp(my_http_request.url,"/")==0){
-				send_response ( fichier_client , 200 , "OK" , msg );
+			else if((fd=check_and_open(my_http_request.url, root)) != -1){
+				send_response_fd (fichier_client , 200 , "OK" , fd, getmime(my_http_request.url));
 			}
 			else{
 				send_response ( fichier_client , 404 , "Not Found" , "Not Found\r\n" );
